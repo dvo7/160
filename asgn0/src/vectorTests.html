@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>vector tests</title>
+  <style>
+    .pass { color: green; }
+    .fail { color: red; }
+  </style>
+</head>
+<body>
+  <p>Vector3 tests</p>
+  <ul id="results"></ul>
+  <script src="lib/cuon-matrix-cse160.js"></script>
+  <script>
+    function approx(a, b) {
+      var t = 1e-5 * Math.max(1, Math.abs(a), Math.abs(b)) + 1e-6;
+      return Math.abs(a - b) <= t;
+    }
+    function vecOk(v, x, y, z) {
+      var e = v.elements;
+      return approx(e[0], x) && approx(e[1], y) && approx(e[2], z);
+    }
+    var ul = document.getElementById("results");
+    var ok = 0, bad = 0;
+    function line(name, pass) {
+      var li = document.createElement("li");
+      li.className = pass ? "pass" : "fail";
+      li.textContent = name + ": " + (pass ? "Passed" : "Failed");
+      ul.appendChild(li);
+      if (pass) ok++; else bad++;
+    }
+
+    var v, a, d, c, m, n;
+
+    v = new Vector3([1, 2, 3]);
+    v.set(new Vector3([4, 7, 8]));
+    line("Test 1 set([4, 7, 8])", vecOk(v, 4, 7, 8));
+
+    a = new Vector3([1000, 432, -56.3]);
+    a.add(new Vector3([-999, 23, 0]));
+    line("Test 2 [1000, 432, -56.3] + [-999, 23, 0]", vecOk(a, 1, 455, -56.3));
+
+    a = new Vector3([5677, -50, 28]);
+    a.sub(new Vector3([-1, -49, 27]));
+    line("Test 3 [5677, -50, 28] - [-1, -49, 27]", vecOk(a, 5678, -1, 1));
+
+    a = new Vector3([58.4, -45, 999999]);
+    a.div(-56.3);
+    line("Test 4 [58.4, -45, 999999] / -56.3", vecOk(a, -1.0373002290725708, 0.7992895245552063, -17761.970703125));
+
+    a = new Vector3([-568, 214789, -251]);
+    a.mul(2.7);
+    line("Test 5 [-568, 214789, -251] * 2.7", vecOk(a, -1533.5999755859375, 579930.3125, -677.7000122070312));
+
+    d = Vector3.dot(new Vector3([2, 6.8, -23]), new Vector3([8, -2, -9]));
+    line("Test 6 [2, 6.8, -23] dot [8, -2, -9]", approx(d, 209.4));
+
+    c = Vector3.cross(new Vector3([34, 6, 34.2222]), new Vector3([87, 34.8675, -234]));
+    line("Test 7 [34, 6, 34.2222] cross [87, 34.8675, -234]", vecOk(c, -2597.242431640625, 10933.3310546875, 663.4949951171875));
+
+    m = new Vector3([45.2, -23.7, 9923]).magnitude();
+    line("Test 8 magnitude([45.2, -23.7, 9923])", approx(m, 9923.131246240026));
+
+    n = new Vector3([-87, 22, 66.45623]);
+    n.normalize();
+    line("Test 9 normalize([-87, 22, 66.45623])", vecOk(n, -0.7791048884391785, 0.19701503217220306, 0.5951307415962219));
+
+    var p = document.createElement("p");
+    p.textContent = ok + " passed, " + bad + " failed";
+    document.body.appendChild(p);
+  </script>
+</body>
+</html>
