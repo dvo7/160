@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CSE 160 — Assignment 1 — WebGL Paint</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 900px;
+        margin: 1rem auto;
+        padding: 0 1rem;
+        line-height: 1.45;
+      }
+      canvas#webgl {
+        display: block;
+        border: 1px solid #333;
+        cursor: crosshair;
+        touch-action: none;
+      }
+      .row {
+        margin: 0.5rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1rem;
+        align-items: center;
+      }
+      label {
+        min-width: 8rem;
+      }
+      .note {
+        background: #f4f4f4;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        margin: 1rem 0;
+      }
+      .sketch {
+        max-width: 100%;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body onload="main()">
+    <h1>Assignment 1 — WebGL Paint &amp; Triangle Picture</h1>
+
+    <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports &quot;canvas&quot;
+    </canvas>
+
+    <div class="row">
+      <button type="button" id="btnPoint">Point brush</button>
+      <button type="button" id="btnTriangle">Triangle brush</button>
+      <button type="button" id="btnCircle">Circle brush</button>
+      <button type="button" id="btnClear">Clear canvas</button>
+      <button type="button" id="btnPicture">Show triangle picture</button>
+    </div>
+
+    <div class="row">
+      <label>Red <span id="redVal">255</span></label>
+      <input type="range" id="red" min="0" max="255" value="255" />
+    </div>
+    <div class="row">
+      <label>Green <span id="greenVal">255</span></label>
+      <input type="range" id="green" min="0" max="255" value="255" />
+    </div>
+    <div class="row">
+      <label>Blue <span id="blueVal">255</span></label>
+      <input type="range" id="blue" min="0" max="255" value="255" />
+    </div>
+    <div class="row">
+      <label>Brush size <span id="sizeVal">10</span></label>
+      <input type="range" id="size" min="1" max="80" value="10" />
+    </div>
+    <div class="row">
+      <label>Circle segments <span id="segmentsVal">24</span></label>
+      <input type="range" id="segments" min="3" max="64" value="24" />
+    </div>
+    <div class="row">
+      <label>Alpha (transparency) <span id="alphaVal">1.00</span></label>
+      <input type="range" id="alpha" min="0" max="1" step="0.01" value="1" />
+    </div>
+
+    <div class="note">
+      <strong>Awesomeness (for graders):</strong>
+      The alpha slider controls transparency. WebGL blending is enabled
+      (<code>gl.blendFunc(SRC_ALPHA, ONE_MINUS_SRC_ALPHA)</code>), so layered strokes look like
+      translucent paint. The canvas uses <code>preserveDrawingBuffer: true</code> for smoother
+      painting with many shapes. Clear only removes your brush strokes; the triangle picture stays
+      until you reload the page.
+    </div>
+
+    <h2>Paper sketch (rubric)</h2>
+    <p>Reference drawing (graph paper, triangle bird). WebGL version matches this layout.</p>
+    <img class="sketch" src="sketch.png" alt="Paper sketch reference" width="400" height="300" />
+
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script src="Point.js"></script>
+    <script src="Triangle.js"></script>
+    <script src="Circle.js"></script>
+    <script src="ColoredPoints.js"></script>
+  </body>
+</html>
