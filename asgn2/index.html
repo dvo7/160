@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CSE 160 - Assignment 2 Blocky Animal</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        background: #f7f7fb;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      h1 {
+        margin: 0 0 10px 0;
+        font-size: 1.4rem;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      #webgl {
+        border: 1px solid #2d2d2d;
+        background: #d9e7ff;
+        cursor: grab;
+        touch-action: none;
+      }
+      #webgl:active {
+        cursor: grabbing;
+      }
+      .panel {
+        background: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 230px 1fr 48px;
+        gap: 8px;
+        align-items: center;
+        margin: 6px 0;
+      }
+      .row input[type="range"] {
+        width: 100%;
+      }
+      .buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 8px 0 14px;
+      }
+      .hint {
+        background: #f2f5ff;
+        border: 1px solid #d7def8;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 12px;
+        font-size: 0.95rem;
+      }
+      .perf {
+        margin: 8px 0 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      }
+      h2 {
+        margin: 12px 0 4px;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body onload="main()">
+    <div class="wrap">
+      <h1>Assignment 2 - Blocky Goat (Hierarchical Model)</h1>
+      <div class="layout">
+        <canvas id="webgl" width="400" height="400">
+          Please use a browser that supports "canvas"
+        </canvas>
+        <div class="panel">
+          <div class="buttons">
+            <button id="btnAnimOn" type="button">Animation ON</button>
+            <button id="btnAnimOff" type="button">Animation OFF</button>
+            <button id="btnReset" type="button">Reset Pose</button>
+          </div>
+          <div class="perf">FPS: <span id="fps">0.0</span></div>
+          <h2>Global Rotation</h2>
+          <div class="row">
+            <label for="globalY">Global Y</label>
+            <input id="globalY" type="range" min="-180" max="180" value="0" />
+            <span id="globalYVal">0</span>
+          </div>
+          <div class="row">
+            <label for="globalX">Global X</label>
+            <input id="globalX" type="range" min="-60" max="60" value="8" />
+            <span id="globalXVal">8</span>
+          </div>
+          <h2>Head + Tail Chain</h2>
+          <div class="row"><label for="headYaw">Head Yaw</label><input id="headYaw" type="range" min="-50" max="50" value="0" /><span id="headYawVal">0</span></div>
+          <div class="row"><label for="headPitch">Head Pitch</label><input id="headPitch" type="range" min="-30" max="40" value="0" /><span id="headPitchVal">0</span></div>
+          <div class="row"><label for="tailBase">Tail Base</label><input id="tailBase" type="range" min="-45" max="60" value="10" /><span id="tailBaseVal">10</span></div>
+          <div class="row"><label for="tailMid">Tail Mid</label><input id="tailMid" type="range" min="-50" max="50" value="0" /><span id="tailMidVal">0</span></div>
+          <div class="row"><label for="tailTip">Tail Tip</label><input id="tailTip" type="range" min="-55" max="55" value="0" /><span id="tailTipVal">0</span></div>
+          <h2>Leg Chain (Front Left)</h2>
+          <div class="row"><label for="flUpper">Upper Leg</label><input id="flUpper" type="range" min="-70" max="70" value="0" /><span id="flUpperVal">0</span></div>
+          <div class="row"><label for="flLower">Lower Leg</label><input id="flLower" type="range" min="-70" max="70" value="0" /><span id="flLowerVal">0</span></div>
+          <div class="row"><label for="flFoot">Foot</label><input id="flFoot" type="range" min="-40" max="40" value="0" /><span id="flFootVal">0</span></div>
+          <h2>Leg Chain (Front Right)</h2>
+          <div class="row"><label for="frUpper">Upper Leg</label><input id="frUpper" type="range" min="-70" max="70" value="0" /><span id="frUpperVal">0</span></div>
+          <div class="row"><label for="frLower">Lower Leg</label><input id="frLower" type="range" min="-70" max="70" value="0" /><span id="frLowerVal">0</span></div>
+          <div class="row"><label for="frFoot">Foot</label><input id="frFoot" type="range" min="-40" max="40" value="0" /><span id="frFootVal">0</span></div>
+          <h2>Leg Chain (Back Left)</h2>
+          <div class="row"><label for="blUpper">Upper Leg</label><input id="blUpper" type="range" min="-70" max="70" value="0" /><span id="blUpperVal">0</span></div>
+          <div class="row"><label for="blLower">Lower Leg</label><input id="blLower" type="range" min="-70" max="70" value="0" /><span id="blLowerVal">0</span></div>
+          <div class="row"><label for="blFoot">Foot</label><input id="blFoot" type="range" min="-40" max="40" value="0" /><span id="blFootVal">0</span></div>
+          <h2>Leg Chain (Back Right)</h2>
+          <div class="row"><label for="brUpper">Upper Leg</label><input id="brUpper" type="range" min="-70" max="70" value="0" /><span id="brUpperVal">0</span></div>
+          <div class="row"><label for="brLower">Lower Leg</label><input id="brLower" type="range" min="-70" max="70" value="0" /><span id="brLowerVal">0</span></div>
+          <div class="row"><label for="brFoot">Foot</label><input id="brFoot" type="range" min="-40" max="40" value="0" /><span id="brFootVal">0</span></div>
+          <div class="hint">
+            Drag on canvas for mouse rotation. Shift+click triggers a poke animation sequence.
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script src="lib/cuon-matrix-cse160.js"></script>
+    <script src="BlockyAnimal.js"></script>
+  </body>
+</html>
